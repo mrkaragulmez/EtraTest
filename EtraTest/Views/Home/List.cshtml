@@ -17,17 +17,31 @@
             let btnHome = $("<button>", { id: "homepage", class: "col-sm-6 col-lg-6 col-xs-6 col-md-6" });
             let btnList = $("<button>", { id: "listpage", class: "col-sm-6 col-lg-6 col-xs-6 col-md-6" });
             let dataTable = $("<table>", { id: "dataTable", class: "table table-responsive" });
-            let searchInput = $("<input>", { type:"text", id: "search", class: "form-control" });
+            let searchInput = $("<input>", { type: "text", id: "search", class: "form-control col-sm-6 col-lg-6 col-xs-6 col-md-6" });
+            let dropdown = $("<div>", { id: "dropdown", class: "dropdown col-sm-6 col-lg-6 col-xs-6 col-md-6" });
+            let dropdownmenu = $("<div>", { id: "dropdown-menu", class: "dropdown-menu row" });
             let dataList;
             //main
 
             mainArea.append(btnList);
             mainArea.append(btnHome);
-            mainArea.append($("<span>", { style:"font-size:18px;" }).html("Arama : "));
+            mainArea.append($("<span>", { style: "font-size:18px; display:block" }).html("Arama : "));
             mainArea.append(searchInput);
+            mainArea.append(dropdown);
             mainArea.append(dataTable);
             btnHome.html("Home Page");
             btnList.html("List Page");
+
+
+            $("#dropdown").attr("aria-labelledby", "dropdownMenuButton");
+            $("#dropdown").append($("<button>", { class: "btn btn-secondary dropdown-toggle", type: "button", id: "dropdownMenuButton" }).html("Filter ↓"));
+            $("#dropdownMenuButton").attr("aria-expanded", "false");
+            $("#dropdownMenuButton").attr("data-toggle", "dropdown");
+            $("#dropdownMenuButton").attr("aria-haspopup", "true");
+
+            dropdownmenu.append($("<a>", { class: "btn btn-small col-sm-12 col-lg-12 col-xs-12 col-md-12", id: "filter1", href: "#" }).html("A'dan Z'ye sırala"));
+            dropdownmenu.append($("<a>", { class: "btn btn-small col-sm-12 col-lg-12 col-xs-12 col-md-12", id: "filter2", href: "#" }).html("Z'den A'ya sırala"));
+            $("#dropdown").append(dropdownmenu);
 
             var table = $("#dataTable");
             table.append($("<thead>"));
@@ -62,7 +76,7 @@
                         table.find($("tbody")).append(row);
                     });
                 }
-                
+
             }
 
 
@@ -73,7 +87,7 @@
             btnList.click(function () {
                 window.location.href = "/Home/List";
             });
-            $('#search').on('keyup', function () {
+            searchInput.on('keyup', function () {
                 var value = $(this).val();
                 if (value.length > 3) {
                     var filteredList = dataList.filter(function (elem) {
@@ -85,6 +99,28 @@
                     FillTable(dataList.slice(0, 18));
                 }
             });
+            $("#filter1").click(function () {
+                function compareAsc(first, second) {
+                    if (first.title < second.title)
+                        return -1;
+                    if (first.title > second.title)
+                        return 1;
+                    return 0;
+                }
+
+                FillTable(dataList.slice(0, 18).sort(compareAsc))
+            });
+            $("#filter2").click(function () {
+                function compareDesc(first, second) {
+                    if (first.title < second.title)
+                        return 1;
+                    if (first.title > second.title)
+                        return -1;
+                    return 0;
+                }
+                FillTable(dataList.slice(0, 18).sort(compareDesc))
+            });
+            
 
 
         });
