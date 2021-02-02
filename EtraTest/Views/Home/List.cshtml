@@ -39,25 +39,32 @@
                 FillTable(dataList.slice(0, 18));
             })
 
-            function FillTable(dataList) {
-                var firstrow = $("<tr>");
+            function FillTable(array) {
+                if (array.length > 0) {
+                    $("#dataTable > thead").empty();
+                    $("#dataTable > tbody").empty();
 
-                Object.keys(dataList[0]).forEach(item => {
-                    if (item != "programType" && item != "images")
-                        firstrow.append($("<td>").html(item));
-                })
+                    var firstrow = $("<tr>");
 
-                table.find($("thead")).append(firstrow);
+                    Object.keys(array[0]).forEach(item => {
+                        if (item != "programType" && item != "images")
+                            firstrow.append($("<td>").html(item));
+                    })
 
-                dataList.forEach((item, index) => {
-                    var row = $("<tr>");
-                    Object.keys(item).forEach((item2, index2) => {
-                        if (item2 != "programType" && item2 != "images")
-                            row.append($("<td>").html(item[item2]));
+                    table.find($("thead")).append(firstrow);
+
+                    array.forEach((item, index) => {
+                        var row = $("<tr>");
+                        Object.keys(item).forEach((item2, index2) => {
+                            if (item2 != "programType" && item2 != "images")
+                                row.append($("<td>").html(item[item2]));
+                        });
+                        table.find($("tbody")).append(row);
                     });
-                    table.find($("tbody")).append(row);
-                });
+                }
+                
             }
+
 
             //events
             btnHome.click(function () {
@@ -70,12 +77,12 @@
                 var value = $(this).val();
                 if (value.length > 3) {
                     var filteredList = dataList.filter(function (elem) {
-                        return elem.title.toLowerCase().indexOf(value) > -1;
+                        return elem.title.toLowerCase().includes(value.toLowerCase());
                     });
-                    console.log(filteredList);
-                    //$("#dataTable")
-
-
+                    FillTable(filteredList.slice(0, 18));
+                }
+                else if (value.length < 1) {
+                    FillTable(dataList.slice(0, 18));
                 }
             });
 
