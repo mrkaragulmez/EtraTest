@@ -17,11 +17,14 @@
             let btnHome = $("<button>", { id: "homepage", class: "col-sm-6 col-lg-6 col-xs-6 col-md-6" });
             let btnList = $("<button>", { id: "listpage", class: "col-sm-6 col-lg-6 col-xs-6 col-md-6" });
             let dataTable = $("<table>", { id: "dataTable", class: "table table-responsive" });
+            let searchInput = $("<input>", { type:"text", id: "search", class: "form-control" });
             let dataList;
             //main
 
             mainArea.append(btnList);
             mainArea.append(btnHome);
+            mainArea.append($("<span>", { style:"font-size:18px;" }).html("Arama : "));
+            mainArea.append(searchInput);
             mainArea.append(dataTable);
             btnHome.html("Home Page");
             btnList.html("List Page");
@@ -33,6 +36,10 @@
             $.get(datasource, function (res) {
                 dataList = JSON.parse(res).entries;
 
+                FillTable(dataList.slice(0, 18));
+            })
+
+            function FillTable(dataList) {
                 var firstrow = $("<tr>");
 
                 Object.keys(dataList[0]).forEach(item => {
@@ -42,7 +49,7 @@
 
                 table.find($("thead")).append(firstrow);
 
-                dataList.slice(0, 18).forEach((item, index) => {
+                dataList.forEach((item, index) => {
                     var row = $("<tr>");
                     Object.keys(item).forEach((item2, index2) => {
                         if (item2 != "programType" && item2 != "images")
@@ -50,15 +57,28 @@
                     });
                     table.find($("tbody")).append(row);
                 });
-            })
+            }
 
             //events
             btnHome.click(function () {
                 window.location.href = "/Home/Index";
-            })
+            });
             btnList.click(function () {
                 window.location.href = "/Home/List";
-            })
+            });
+            $('#search').on('keyup', function () {
+                var value = $(this).val();
+                if (value.length > 3) {
+                    var filteredList = dataList.filter(function (elem) {
+                        return elem.title.toLowerCase().indexOf(value) > -1;
+                    });
+                    console.log(filteredList);
+                    //$("#dataTable")
+
+
+                }
+            });
+
 
         });
     </script>
