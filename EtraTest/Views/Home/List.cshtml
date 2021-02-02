@@ -1,0 +1,73 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Etra Test</title>
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script>
+        $(function () {
+
+            //initalize
+            let datasource = "https://gist.githubusercontent.com/erkanerturk/d7f4f4f0ed205c2aa1b26a7cc6e8461d/raw/ef374acb5b052895fbac0de199d857ff87b490b1/sample.json";
+            let mainArea = $("div#main");
+            let btnHome = $("<button>", { id: "homepage", class: "col-sm-6 col-lg-6 col-xs-6 col-md-6" });
+            let btnList = $("<button>", { id: "listpage", class: "col-sm-6 col-lg-6 col-xs-6 col-md-6" });
+            let dataTable = $("<table>", { id: "dataTable", class: "table table-responsive" });
+            let dataList;
+            //main
+
+            mainArea.append(btnList);
+            mainArea.append(btnHome);
+            mainArea.append(dataTable);
+            btnHome.html("Home Page");
+            btnList.html("List Page");
+
+            var table = $("#dataTable");
+            table.append($("<thead>"));
+            table.append($("<tbody>"));
+
+            $.get(datasource, function (res) {
+                dataList = JSON.parse(res).entries;
+
+                var firstrow = $("<tr>");
+
+                Object.keys(dataList[0]).forEach(item => {
+                    if (item != "programType" && item != "images")
+                        firstrow.append($("<td>").html(item));
+                })
+
+                table.find($("thead")).append(firstrow);
+
+                dataList.slice(0, 18).forEach((item, index) => {
+                    var row = $("<tr>");
+                    Object.keys(item).forEach((item2, index2) => {
+                        if (item2 != "programType" && item2 != "images")
+                            row.append($("<td>").html(item[item2]));
+                    });
+                    table.find($("tbody")).append(row);
+                });
+            })
+
+            //events
+            btnHome.click(function () {
+                window.location.href = "/Home/Index";
+            })
+            btnList.click(function () {
+                window.location.href = "/Home/List";
+            })
+
+        });
+    </script>
+</head>
+<body>
+    <div id="main" class="row container" style="margin-top:2em">
+
+    </div>
+
+
+</body>
+</html>
